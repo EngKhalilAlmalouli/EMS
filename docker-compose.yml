@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: ems
+    image: postgres
+    environment:
+      POSTGRES_USER: Khalil
+      POSTGRES_PASSWORD: Khalil
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - db:/var/lib/postgresql/data
+    ports:
+      - "5431:5432"
+    networks:
+      - db
+    restart: unless-stopped
+
+networks:
+  db:
+    driver: bridge
+
+volumes:
+  db:
