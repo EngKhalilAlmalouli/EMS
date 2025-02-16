@@ -1,6 +1,8 @@
 package com.example.ems.Department;
 
+import com.example.ems.Project.ProjectRequest;
 import com.example.ems.configuration.NotFoundInDatabaseException;
+import com.example.ems.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,8 @@ import java.util.List;
 public class DepartmentService {
     @Autowired
     private DepartmentRepository departmentRepository;
+    private final ObjectValidator<DepartmentRequest> validator;
+
 
     public List<?> getAllDepartments() {
         return departmentRepository.findAll();
@@ -27,7 +31,8 @@ public class DepartmentService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    public ResponseEntity<?> createDepartment(DepartmentRequest request) {
+    public ResponseEntity<?> createDepartment(Integer id, DepartmentRequest request) {
+        validator.validate(request);
         Department department = Department.builder()
                 .name(request.getDepartmentName())
                 .description(request.getDepartmentName())
@@ -41,6 +46,7 @@ public class DepartmentService {
     public DepartmentResponse updateDepartment(Integer id, DepartmentRequest request) throws NotFoundInDatabaseException {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundInDatabaseException("Department not found"));
+        validator.validate(request);
         department.setName(request.getDepartmentName());
         department.setDescription(request.getDepartmentName());
 
@@ -54,13 +60,9 @@ public class DepartmentService {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundInDatabaseException("Department not found"));
 
-        if (department == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Department not found");
-        }
         departmentRepository.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).body("Department deleted successfully");
     }
-
 
 
     private DepartmentResponse mapToResponse(Department department) {

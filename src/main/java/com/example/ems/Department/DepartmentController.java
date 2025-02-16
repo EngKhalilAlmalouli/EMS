@@ -21,22 +21,25 @@ public class DepartmentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getDepartmentById(@PathVariable Integer id) throws NotFoundInDatabaseException {
-        return ResponseEntity.ok(departmentService.getDepartmentById(id));
+//        return ResponseEntity.ok(departmentService.getDepartmentById(id));
+        return departmentService.getDepartmentById(id);
     }
 
     @PostMapping("/{id}")
     public ResponseEntity<?> createDepartment(@PathVariable Integer id, @RequestBody DepartmentRequest request) throws NotFoundInDatabaseException {
-        return ResponseEntity.ok(departmentService.createDepartment(request));
+//        return ResponseEntity.ok(departmentService.createDepartment(request));
+        return departmentService.createDepartment(id,request);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateDepartment(@PathVariable Integer id, @RequestBody DepartmentRequest request) throws NotFoundInDatabaseException {
-        return ResponseEntity.ok(departmentService.updateDepartment(id, request));
+    public DepartmentResponse updateDepartment(@PathVariable Integer id, @RequestBody DepartmentRequest request) throws NotFoundInDatabaseException {
+//        return ResponseEntity.ok(departmentService.updateDepartment(id, request));
+        return departmentService.updateDepartment(id, request);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDepartment(@PathVariable Integer id) throws NotFoundInDatabaseException {
-        departmentService.deleteDepartment(id);
-        return ResponseEntity.ok().build();
+      return   departmentService.deleteDepartment(id);
+//        return ResponseEntity.ok().build();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.ems.employees;
 
 
+import com.example.ems.configuration.NotFoundInDatabaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,23 +20,26 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getEmployeeById(@PathVariable Integer id) {
-        return ResponseEntity.ok(employeeService.getEmployeeById(id));
+    public EmployeeResponse getEmployeeById(@PathVariable Integer id) {
+//        return ResponseEntity.ok(employeeService.getEmployeeById(id));
+        return employeeService.getEmployeeById(id);
     }
 
     @PostMapping
-    public ResponseEntity<?> createEmployee(@RequestBody EmployeeRequest request) {
-        return ResponseEntity.ok(employeeService.createEmployee(request));
+    public EmployeeResponse createEmployee(@RequestBody EmployeeRequest request) {
+//        return ResponseEntity.ok(employeeService.createEmployee(request));
+        return employeeService.createEmployee(request);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateEmployee(@PathVariable Integer id, @RequestBody EmployeeRequest request) {
-        return ResponseEntity.ok(employeeService.updateEmployee(id, request));
+    public EmployeeResponse updateEmployee(@PathVariable Integer id, @RequestBody EmployeeRequest request) {
+//        return ResponseEntity.ok(employeeService.updateEmployee(id, request));
+      return employeeService.updateEmployee(id, request);
+
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteEmployee(@PathVariable Integer id) {
-        employeeService.deleteEmployee(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> deleteEmployee(@PathVariable Integer id) throws NotFoundInDatabaseException {
+      return employeeService.deleteEmployee(id);
     }
 }

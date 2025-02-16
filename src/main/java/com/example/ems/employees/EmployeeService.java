@@ -4,7 +4,12 @@ import com.example.ems.Department.Department;
 import com.example.ems.Department.DepartmentRepository;
 import com.example.ems.Project.Project;
 import com.example.ems.Project.ProjectRepository;
+import com.example.ems.Project.ProjectRequest;
+import com.example.ems.configuration.NotFoundInDatabaseException;
+import com.example.ems.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,26 +22,29 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
     private final ProjectRepository projectRepository;
+    private final ObjectValidator<EmployeeRequest> validator;
+
 
     public List<?> getAllEmployees() {
-        return employeeRepository.findAll().stream().map(this:: mapToResponse).collect(Collectors.toList());
+        return employeeRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
-    public EmployeeResponse getEmployeeById(Integer id)  {
+    public EmployeeResponse getEmployeeById(Integer id) {
         return employeeRepository.findById(id)
                 .map(this::mapToResponse)
-                .orElseThrow(()-> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
     }
 
     public EmployeeResponse createEmployee(EmployeeRequest request) {
+        validator.validate(request);
         Department department = departmentRepository.findById(request.getDepartment())
-                .orElseThrow(()-> new RuntimeException("Department not found"));
+                .orElseThrow(() -> new RuntimeException("Department not found"));
 
         List<Project> projects = new ArrayList<>();
-        for (Integer id : request.getProjectId()){
+        for (Integer id : request.getProjectId()) {
             Project project = projectRepository.findById(id)
-                    .orElseThrow(()-> new RuntimeException("Project not found"));
-            if (project !=null) {
+                    .orElseThrow(() -> new RuntimeException("Project not found"));
+            if (project != null) {
                 projects.add(project);
             }
         }
@@ -56,12 +64,12 @@ public class EmployeeService {
 
     public EmployeeResponse updateEmployee(Integer id, EmployeeRequest request) {
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
 
         Department department = departmentRepository.findById(request.getDepartment())
-                .orElseThrow(()-> new RuntimeException("Department not found"));
+                .orElseThrow(() -> new RuntimeException("Department not found"));
 
-
+        validator.validate(request);
         employee.setFirstName(request.getFirstName());
         employee.setLastName(request.getLastName());
         employee.setEmail(request.getEmail());
@@ -72,8 +80,12 @@ public class EmployeeService {
         return mapToResponse(employee);
     }
 
-    public void deleteEmployee(Integer id) {
-        employeeRepository.deleteById(id);
+    public ResponseEntity<?> deleteEmployee(Integer id) throws NotFoundInDatabaseException {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundInDatabaseException("Employee not found"));
+
+        projectRepository.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Employee deleted successfully");
     }
 
 

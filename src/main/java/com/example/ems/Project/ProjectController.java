@@ -22,23 +22,28 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
+//    public ResponseEntity<?> getProjectById(@PathVariable Integer id) throws NotFoundInDatabaseException {
+//        return ResponseEntity.ok(projectService.getProjectById(id));
+//    }
     public ResponseEntity<?> getProjectById(@PathVariable Integer id) throws NotFoundInDatabaseException {
-        return ResponseEntity.ok(projectService.getProjectById(id));
+        return projectService.getProjectById(id);
     }
 
     @PostMapping
-    public ResponseEntity<ResponseEntity<?>> createProject(@RequestBody ProjectRequest request) {
-        return ResponseEntity.ok(projectService.createProject(request));
+    public ResponseEntity<?> createProject(@RequestBody ProjectRequest request) {
+//        return ResponseEntity.ok(projectService.createProject(request));
+        return projectService.createProject(request);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProject(@PathVariable Integer id, @RequestBody ProjectRequest request) throws NotFoundInDatabaseException {
-      return ResponseEntity.ok(projectService.updateProject(id, request));
+    public ProjectResponse updateProject(@PathVariable Integer id, @RequestBody ProjectRequest request) throws NotFoundInDatabaseException {
+//      return ResponseEntity.ok(projectService.updateProject(id, request));
+        return projectService.updateProject(id, request);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProject(@PathVariable Integer id) throws NotFoundInDatabaseException {
-        projectService.deleteProject(id);
-        return ResponseEntity.ok().build();
+      return projectService.deleteProject(id);
+//        return ResponseEntity.ok().build();
     }
 }
