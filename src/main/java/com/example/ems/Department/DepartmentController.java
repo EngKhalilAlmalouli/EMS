@@ -12,6 +12,7 @@ import java.util.List;
 @RequestMapping("/api/departments")
 @RequiredArgsConstructor
 public class DepartmentController {
+
     private final DepartmentService departmentService;
 
     @GetMapping
@@ -39,7 +40,7 @@ public class DepartmentController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDepartment(@PathVariable Integer id) throws NotFoundInDatabaseException {
-      return   departmentService.deleteDepartment(id);
+      return departmentService.deleteDepartment(id);
 //        return ResponseEntity.ok().build();
     }
 }
